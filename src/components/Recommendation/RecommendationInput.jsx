@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getRecommendations } from '../../services/api';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { getAllStates } from '../../data/location';
 import './Recommendation.css';
 
 const crimeFeatures = ['MURDER', 'RAPE', 'THEFT', 'RIOTS'];
 
 const RecommendationInput = () => {
   const [stateFilter, setStateFilter] = useState('');
+  const [availableStates, setAvailableStates] = useState([]);
   const [topN, setTopN] = useState(5);
   const [weights, setWeights] = useState(
     crimeFeatures.reduce((acc, feature) => {
@@ -18,6 +20,12 @@ const RecommendationInput = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  // Load states on component mount
+  useEffect(() => {
+    setAvailableStates(getAllStates());
+  }, []);
+
 
   const handleWeightChange = (feature, value) => {
     const numericValue = parseFloat(value);
@@ -34,7 +42,7 @@ const RecommendationInput = () => {
 
     try {
       const options = {
-        state: stateFilter.toUpperCase() || null,
+        state: stateFilter || null,
         topN: parseInt(topN, 10) || 5,
         weights: weights,
       };
@@ -66,14 +74,18 @@ const RecommendationInput = () => {
           <form onSubmit={handleSubmit} className="recommendation-form">
             <div className="form-group">
               <label htmlFor="stateFilter">State / Union Territory (Optional)</label>
-              <input
-                type="text"
+              <select
                 id="stateFilter"
                 value={stateFilter}
                 onChange={(e) => setStateFilter(e.target.value)}
-                placeholder="e.g., MAHARASHTRA (Leave blank for all India)"
-              />
+              >
+                <option value="">All States</option>
+                {availableStates.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
             </div>
+
             
             <div className="form-group">
               <label htmlFor="topN">Number of Recommendations</label>

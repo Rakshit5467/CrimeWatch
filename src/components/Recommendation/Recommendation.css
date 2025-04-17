@@ -229,3 +229,50 @@
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   }
 }
+
+.map-section {
+  margin-bottom: 2rem;
+}
+
+.map-container {
+  margin-top: 1rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.map-loading, .map-error {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: var(--border-radius);
+}
+
+.map-subtitle {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.popup-content {
+  margin-top: 0.5rem;
+}
+
+.rank-badge {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.safety-score-popup {
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.popup-coords {
+  font-size: 0.8rem;
+  color: #666;
+}

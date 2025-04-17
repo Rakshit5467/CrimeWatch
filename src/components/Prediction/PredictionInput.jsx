@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { predictSafety } from '../../services/api';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { getAllStates, getDistrictsForState } from '../../data/location';
 import './Prediction.css';
 
 const PredictionInput = () => {
   const [stateUt, setStateUt] = useState('');
   const [district, setDistrict] = useState('');
+  const [availableStates, setAvailableStates] = useState([]);
+  const [availableDistricts, setAvailableDistricts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Load states on component mount
+  useEffect(() => {
+    setAvailableStates(getAllStates());
+  }, []);
+
+  // Update districts when state changes
+  useEffect(() => {
+    if (stateUt) {
+      setAvailableDistricts(getDistrictsForState(stateUt));
+      setDistrict(''); // Reset district when state changes
+    } else {
+      setAvailableDistricts([]);
+    }
+  }, [stateUt]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!stateUt || !district) {
-      setError("Please enter both State/UT and District.");
+      setError("Please select both State and District.");
       return;
     }
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await predictSafety(stateUt.toUpperCase(), district.toUpperCase());
+      const result = await predictSafety(stateUt, district);
       navigate('/predict/result', { state: { result } });
     } catch (err) {
       console.error("Prediction failed:", err);
@@ -36,7 +54,7 @@ const PredictionInput = () => {
       <div className="container">
         <h1 className="section-title">District Safety Prediction</h1>
         <p className="section-subtitle">
-          Enter a State/UT and District to predict if it's relatively safe or unsafe based on historical crime averages.
+          Select a State and District to predict safety based on historical data.
         </p>
         
         <div className="prediction-card">
@@ -44,27 +62,34 @@ const PredictionInput = () => {
           
           <form onSubmit={handleSubmit} className="prediction-form">
             <div className="form-group">
-              <label htmlFor="stateUt">State / Union Territory</label>
-              <input
-                type="text"
+              <label htmlFor="stateUt">State</label>
+              <select
                 id="stateUt"
                 value={stateUt}
                 onChange={(e) => setStateUt(e.target.value)}
-                placeholder="e.g., MAHARASHTRA"
                 required
-              />
+              >
+                <option value="">Select State</option>
+                {availableStates.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
             </div>
             
             <div className="form-group">
               <label htmlFor="district">District</label>
-              <input
-                type="text"
+              <select
                 id="district"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                placeholder="e.g., MUMBAI"
+                disabled={!stateUt}
                 required
-              />
+              >
+                <option value="">Select District</option>
+                {availableDistricts.map(district => (
+                  <option key={district} value={district}>{district}</option>
+                ))}
+              </select>
             </div>
             
             {error && <div className="error-message">{error}</div>}
