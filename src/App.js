@@ -8,10 +8,16 @@ import RecommendationInput from './components/Recommendation/RecommendationInput
 import RecommendationResult from './components/Recommendation/RecommendationResult';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import Login from './components/Auth/Login';
+import Profile from './components/Auth/Profile';
+import Logout from './components/Auth/Logout';
 import './App.css';
 
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -27,7 +33,7 @@ function App() {
   return (
     <Router>
       <div className="app-wrapper">
-        <Navbar />
+        <Navbar user={user} />
         <main className="app-content">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -35,6 +41,9 @@ function App() {
             <Route path="/predict/result" element={<PredictionResult />} />
             <Route path="/recommend" element={<RecommendationInput />} />
             <Route path="/recommend/result" element={<RecommendationResult />} />
+            <Route path="/login" element={<Login onLogin={setUser} />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<Logout onLogout={() => setUser(null)} />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
