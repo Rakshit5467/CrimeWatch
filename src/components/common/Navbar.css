@@ -1,76 +1,162 @@
 .navbar {
-    background-color: var(--darker-bg);
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  
-  .navbar .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-  
-  .logo-icon {
-    margin-right: 0.5rem;
-    font-size: 1.8rem;
-  }
-  
+  background-color: transparent;
+  padding: 1rem 0;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.navbar.scrolled {
+  background-color: var(--darker-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.logo-icon {
+  margin-right: 0.5rem;
+  font-size: 1.8rem;
+}
+
+/* Nav Links */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+  position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary-light);
+}
+
+/* Underline animation */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Dark Mode Toggle */
+.dark-toggle {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  color: var(--text-primary);
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: var(--darker-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  min-width: 120px;
+}
+
+.dropdown-content a {
+  display: block;
+  color: var(--text-secondary);
+  padding: 0.3rem 0;
+  text-decoration: none;
+}
+
+.dropdown-content a:hover {
+  color: var(--primary);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Mobile */
+.menu-toggle {
+  display: none;
+  font-size: 1.6rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
   .navbar-links {
-    display: flex;
-    gap: 2rem;
-  }
-  
-  .nav-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-    padding: 0.5rem 0;
-    position: relative;
-  }
-  
-  .nav-link:hover {
-    color: var(--primary-light);
-  }
-  
-  .nav-link::after {
-    content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--primary);
-    transition: var(--transition);
+    top: 70px;
+    right: 10px;
+    flex-direction: column;
+    background: var(--darker-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    gap: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
   }
-  
-  .nav-link:hover::after {
-    width: 100%;
+
+  .navbar-links.open {
+    max-height: 400px;
   }
-  
-  @media (max-width: 768px) {
-    .navbar .container {
-      flex-direction: column;
-    }
-    
-    .navbar-links {
-      margin-top: 1rem;
-      gap: 1.5rem;
-    }
-    
-    .logo {
-      font-size: 1.3rem;
-    }
+
+  .menu-toggle {
+    display: block;
   }
+}
+
+/* Dark mode theme */
+body.dark-theme {
+  background: #121212;
+  color: #f1f1f1;
+}
